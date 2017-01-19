@@ -70,6 +70,14 @@
                     <!-- Title Content -->
                     <h1>{{selectedTable}}</h1>
 
+                    <!-- Error Message Block -->
+                    <div class="alert alert-danger" role="alert" ng-show="errorMessage.length > 0">
+                        <button type="button" class="close" ng-click="closeAlert()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>{{errorCode}}</strong> {{errorMessage}}
+                    </div>
+
                     <!-- Function Block -->
                     <div class="d-flex justify-content-between pb-3">
                         <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#addDataModal">New Data</button>

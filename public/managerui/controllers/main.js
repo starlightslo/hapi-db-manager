@@ -27,6 +27,8 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     $scope.newData = {}
     $scope.selectedDataId = 0
     $scope.selectedData = {}
+    $scope.errorCode = 0
+    $scope.errorMessage = ''
 
     /**
      * Init function
@@ -88,61 +90,51 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
      */
     $scope.createTable = () => {
         if (DEBUG) console.log('Click the create table.')
-        
-        // Validate the data
-        var validateFlag = true
-        if ($scope.newTable.name.length === 0) {
-            validateFlag = false
+    
+        // Prepare the payload
+        var data = {
+            columnList: $scope.newTable.columnList
         }
-        $scope.newTable.columnList.forEach(column => {
-            if (column.name.length === 0) {
-                validateFlag = false
-                return
-            }
+
+        // Send create table request to server
+        $http({
+            method: 'POST',
+            url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.newTable.name,
+            data: data
         })
+        .then(response => {
+            if (DEBUG) console.log(response)
+            if (response.status === 200) {
+                const data = response.data
+                if (data.code === 200) {
+                    // Update table list
+                    DBService.setTableList(data.data)
+                    $scope.tableList = DBService.getTableList()
 
-        if (validateFlag) {
-            // Prepare the payload
-            var data = {
-                columnList: $scope.newTable.columnList
-            }
+                    // Reset the new table variable
+                    $scope.newTable = JSON.parse(DEFAULT_TABLE)
 
-            // Send create table request to server
-            $http({
-                method: 'POST',
-                url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.newTable.name,
-                data: data
-            })
-            .then(response => {
-                if (DEBUG) console.log(response)
-                if (response.status === 200) {
-                    const data = response.data
-                    if (data.code === 200) {
-                        // Update table list
-                        DBService.setTableList(data.data)
-                        $scope.tableList = DBService.getTableList()
-
-                        // Reset the new table variable
-                        $scope.newTable = JSON.parse(DEFAULT_TABLE)
-
-                        // Close the newTableModal
-                        angular.element('#newTableModal').modal('hide')
-                    } else {
-                        // Display error
-                        // ----- TODO -----
-                    }
+                    // Close the newTableModal
+                    angular.element('#newTableModal').modal('hide')
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
-            })
-            .catch(err => {
-                if (DEBUG) console.error(err)
-            })
-        } else {
+            } else {
+                // Display error
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
+            }
+        })
+        .catch(err => {
             // Display error
-            // ----- TODO -----
-        }
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
+
+            // Close the newTableModal
+            angular.element('#newTableModal').modal('hide')
+        })
     }
 
     /**
@@ -192,7 +184,7 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     DBService.setTableList(data.data)
                     $scope.tableList = DBService.getTableList()
 
-                    // Close the newTableModal
+                    // Close the dropTableModal
                     angular.element('#dropTableModal').modal('hide')
 
                     // Set the first data to default database
@@ -210,15 +202,22 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     }
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
+
+            // Close the dropTableModal
+            angular.element('#dropTableModal').modal('hide')
         })
     }
 
@@ -227,7 +226,6 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
      */
     $scope.insertData = () => {
         if (DEBUG) console.log('Click the insert data.')
-        console.log($scope.newData)
         $http({
             method: 'POST',
             url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data',
@@ -248,19 +246,26 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     // Reset the new data value
                     $scope.newData = {}
 
-                    // Close the newTableModal
+                    // Close the addTableModal
                     angular.element('#addDataModal').modal('hide')
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
+
+            // Close the addTableModal
+            angular.element('#addDataModal').modal('hide')
         })
     }
 
@@ -298,19 +303,26 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     // Reset the new data value
                     $scope.selectedData = {}
 
-                    // Close the newTableModal
+                    // Close the deleteDataModal
                     angular.element('#deleteDataModal').modal('hide')
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
+
+            // Close the deleteDataModal
+            angular.element('#deleteDataModal').modal('hide')
         })
     }
 
@@ -339,20 +351,36 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     // Reset the new data value
                     $scope.newData = {}
 
-                    // Close the newTableModal
+                    // Close the editDataModal
                     angular.element('#editDataModal').modal('hide')
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
+
+            // Close the editDataModal
+            angular.element('#editDataModal').modal('hide')
         })
+    }
+
+    /**
+     * Close alert
+     */
+    $scope.closeAlert = () => {
+        // Clear error message
+        $scope.errorCode = 0
+        $scope.errorMessage = ''
     }
 
     /**
@@ -380,15 +408,19 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     }
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
         })
     }
 
@@ -423,15 +455,19 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     }
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
         })
     }
 
@@ -453,15 +489,19 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     $scope.columnInfoList = DBService.getColumnInfoList()
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
         })
     }
 
@@ -486,15 +526,19 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     $scope.dataList = DBService.getDataList()
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
         })
     }
 
@@ -522,15 +566,19 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     }
                 } else {
                     // Display error
-                    // ----- TODO -----
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
                 }
             } else {
                 // Display error
-                // ----- TODO -----
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
             }
         })
         .catch(err => {
-            if (DEBUG) console.error(err)
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
         })
     }
 })
