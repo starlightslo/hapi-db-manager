@@ -2,6 +2,16 @@ var dbManagerApp = angular.module('dbManagerApp')
 dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService) => {
     const DEBUG = true
 
+    // Define
+    const DEFAULT_COLUMN = JSON.stringify({
+        name: '',
+        type: 'integer'
+    })
+    const DEFAULT_TABLE = JSON.stringify({
+        name: '',
+        columnList: [JSON.parse(DEFAULT_COLUMN)]
+    })
+
     // Variables
     $scope.selectedDB = ''
     $scope.selectedTable = ''
@@ -9,6 +19,7 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     $scope.totalPage = 1
     $scope.totalPageArray = []
     $scope.displayRows = 30
+    $scope.newTable = JSON.parse(DEFAULT_TABLE)
 
     /**
      * Init function
@@ -68,8 +79,85 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     /**
      * Click new table
      */
-    $scope.newTable = () => {
-        if (DEBUG) console.log('Click the new table.')
+    $scope.createTable = () => {
+        if (DEBUG) console.log('Click the create table.')
+        
+        // Validate the data
+        var validateFlag = true
+        if ($scope.newTable.name.length === 0) {
+            validateFlag = false
+        }
+        $scope.newTable.columnList.forEach(column => {
+            if (column.name.length === 0) {
+                validateFlag = false
+                return
+            }
+        })
+
+        if (validateFlag) {
+            // Prepare the payload
+            var data = {
+                columnList: $scope.newTable.columnList
+            }
+
+            // Send create table request to server
+            $http({
+                method: 'POST',
+                url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.newTable.name,
+                data: data
+            })
+            .then(response => {
+                if (DEBUG) console.log(response)
+                if (response.status === 200) {
+                    const data = response.data
+                    if (data.code === 200) {
+                        // Update table list
+                        DBService.setTableList(data.data)
+                        $scope.tableList = DBService.getTableList()
+
+                        // Reset the new table variable
+                        $scope.newTable = JSON.parse(DEFAULT_TABLE)
+
+                        // Close the newTableModal
+                        angular.element('#newTableModal').modal('hide')
+                    } else {
+                        // Display error
+                        // ----- TODO -----
+                    }
+                } else {
+                    // Display error
+                    // ----- TODO -----
+                }
+            })
+            .catch(err => {
+                if (DEBUG) console.error(err)
+            })
+        } else {
+            // Display error
+            // ----- TODO -----
+        }
+    }
+
+    /**
+     * Click new column
+     */
+    $scope.createColumn = () => {
+        if (DEBUG) console.log('Click the create column.')
+        $scope.newTable.columnList.push(JSON.parse(DEFAULT_COLUMN))
+
+        // Send update column broadcast to re-validate the data
+        $scope.$broadcast('updateColumn', null)
+    }
+
+    /**
+     * Click remove column
+     */
+    $scope.removeColumn = (index) => {
+        if (DEBUG) console.log('Click the remove column.')
+        $scope.newTable.columnList.splice(index, 1)
+
+        // Send update column broadcast to re-validate the data
+        $scope.$broadcast('updateColumn', null)
     }
 
     /**
