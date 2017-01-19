@@ -15,11 +15,16 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     // Variables
     $scope.selectedDB = ''
     $scope.selectedTable = ''
+    $scope.dbList = []
+    $scope.tableList = []
+    $scope.columnList = []
+    $scope.columnInfoList = []
     $scope.page = 1
     $scope.totalPage = 1
     $scope.totalPageArray = []
     $scope.displayRows = 30
     $scope.newTable = JSON.parse(DEFAULT_TABLE)
+    $scope.newData = {}
 
     /**
      * Init function
@@ -216,10 +221,41 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     }
 
     /**
-     * Click new data
+     * Click insert data
      */
-    $scope.newData = () => {
-        if (DEBUG) console.log('Click the new data.')
+    $scope.insertData = () => {
+        if (DEBUG) console.log('Click the insert data.')
+        console.log($scope.newData)
+        $http({
+            method: 'POST',
+            url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data',
+            data: $scope.newData
+        })
+        .then(response => {
+            if (DEBUG) console.log(response)
+            if (response.status === 200) {
+                const data = response.data
+                if (data.code === 200) {
+                    DBService.setDataList(data.data)
+                    $scope.dataList = DBService.getDataList()
+
+                    // Reset the new data value
+                    $scope.newData = {}
+
+                    // Close the newTableModal
+                    angular.element('#addDataModal').modal('hide')
+                } else {
+                    // Display error
+                    // ----- TODO -----
+                }
+            } else {
+                // Display error
+                // ----- TODO -----
+            }
+        })
+        .catch(err => {
+            if (DEBUG) console.error(err)
+        })
     }
 
     /**
@@ -322,8 +358,9 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
             if (response.status === 200) {
                 const data = response.data
                 if (data.code === 200) {
-                    DBService.setColumnList(Object.keys(data.data))
+                    DBService.setColumnList(data.data)
                     $scope.columnList = DBService.getColumnList()
+                    $scope.columnInfoList = DBService.getColumnInfoList()
                 } else {
                     // Display error
                     // ----- TODO -----
