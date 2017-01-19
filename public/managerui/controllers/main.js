@@ -168,10 +168,51 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     }
 
     /**
-     * Click delete table
+     * Click drop table
      */
-    $scope.deleteTable = () => {
-        if (DEBUG) console.log('Click the delete data.')
+    $scope.dropTable = () => {
+        if (DEBUG) console.log('Click the drop table.')
+        $http({
+            method: 'DELETE',
+            url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable
+        })
+        .then(response => {
+            if (DEBUG) console.log(response)
+            if (response.status === 200) {
+                const data = response.data
+                if (data.code === 200) {
+                    // Update table list
+                    DBService.setTableList(data.data)
+                    $scope.tableList = DBService.getTableList()
+
+                    // Close the newTableModal
+                    angular.element('#dropTableModal').modal('hide')
+
+                    // Set the first data to default database
+                    if ($scope.tableList.length > 0) {
+                        $scope.selectedTable = $scope.tableList[0]
+
+                        // getting columns from selected table
+                        $scope.getColumnList()
+
+                        // getting total count from selected table
+                        $scope.getTotalCount()
+
+                        // getting data from selected table
+                        $scope.getDataList()
+                    }
+                } else {
+                    // Display error
+                    // ----- TODO -----
+                }
+            } else {
+                // Display error
+                // ----- TODO -----
+            }
+        })
+        .catch(err => {
+            if (DEBUG) console.error(err)
+        })
     }
 
     /**
