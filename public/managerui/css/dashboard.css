@@ -54,3 +54,11 @@ h1 {
 .sidebar .nav-link {
   border-radius: 0;
 }
+
+/* Scrollspy */
+.scrollspy {
+  position: relative;
+  height: 25px;
+  max-width: 150px;
+  overflow: auto;
+}

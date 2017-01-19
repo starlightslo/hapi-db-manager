@@ -25,6 +25,8 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     $scope.displayRows = 30
     $scope.newTable = JSON.parse(DEFAULT_TABLE)
     $scope.newData = {}
+    $scope.selectedDataId = 0
+    $scope.selectedData = {}
 
     /**
      * Init function
@@ -229,7 +231,11 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
         $http({
             method: 'POST',
             url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data',
-            data: $scope.newData
+            data: $scope.newData,
+            params: {
+                page: $scope.page,
+                rows: $scope.displayRows
+            }
         })
         .then(response => {
             if (DEBUG) console.log(response)
@@ -259,10 +265,94 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     }
 
     /**
+     * Set delete data id
+     */
+    $scope.setDataId = (id) => {
+        if (DEBUG) console.log('Set data id.')
+        $scope.selectedDataId = id
+        $scope.selectedData = DBService.getData(id)
+    }
+
+    /**
      * Click delete data
      */
     $scope.deleteData = () => {
         if (DEBUG) console.log('Click the delete data.')
+        $http({
+            method: 'DELETE',
+            url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data',
+            data: [$scope.selectedDataId],
+            params: {
+                page: $scope.page,
+                rows: $scope.displayRows
+            }
+        })
+        .then(response => {
+            if (DEBUG) console.log(response)
+            if (response.status === 200) {
+                const data = response.data
+                if (data.code === 200) {
+                    DBService.setDataList(data.data)
+                    $scope.dataList = DBService.getDataList()
+
+                    // Reset the new data value
+                    $scope.selectedData = {}
+
+                    // Close the newTableModal
+                    angular.element('#deleteDataModal').modal('hide')
+                } else {
+                    // Display error
+                    // ----- TODO -----
+                }
+            } else {
+                // Display error
+                // ----- TODO -----
+            }
+        })
+        .catch(err => {
+            if (DEBUG) console.error(err)
+        })
+    }
+
+    /**
+     * Click update data
+     */
+    $scope.updateData = () => {
+        if (DEBUG) console.log('Click the update data.')
+        $http({
+            method: 'PUT',
+            url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data/' + $scope.selectedDataId,
+            data: $scope.selectedData,
+            params: {
+                page: $scope.page,
+                rows: $scope.displayRows
+            }
+        })
+        .then(response => {
+            if (DEBUG) console.log(response)
+            if (response.status === 200) {
+                const data = response.data
+                if (data.code === 200) {
+                    DBService.setDataList(data.data)
+                    $scope.dataList = DBService.getDataList()
+
+                    // Reset the new data value
+                    $scope.newData = {}
+
+                    // Close the newTableModal
+                    angular.element('#editDataModal').modal('hide')
+                } else {
+                    // Display error
+                    // ----- TODO -----
+                }
+            } else {
+                // Display error
+                // ----- TODO -----
+            }
+        })
+        .catch(err => {
+            if (DEBUG) console.error(err)
+        })
     }
 
     /**

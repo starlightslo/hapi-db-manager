@@ -36,6 +36,13 @@ dbManagerApp.factory('DBService', ($rootScope, $http) => {
         getDataList: () => {
             return dataList
         },
+        getData: (id) => {
+            for (var i = 0 ; i < dataList.length ; i++) {
+                if (dataList[i].id === id) {
+                    return JSON.parse(JSON.stringify(dataList[i]))
+                }
+            }
+        },
         setTotalCount: (count) => {
             totalCount = count
         },
