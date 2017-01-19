@@ -82,7 +82,7 @@
                     <div class="d-flex justify-content-between pb-3">
                         <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#addDataModal">New Data</button>
                         <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#dropTableModal">Drop Table</button>
-                        <button type="button" class="btn btn-outline-success btn-sm" ng-click="editTable()">Edit Table</button>
+                        <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#editTableModal">Edit Table</button>
                     </div>
 
                     <!-- Content Block -->
@@ -227,6 +227,89 @@
             </div>
         </div>
 
+        <!-- Edit Table Modal Content -->
+        <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newTableModalLabel">Edit Table</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group row">
+                                <label for="table-name" class="col-3 col-form-label">Table name:</label>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="tableName" ng-model="editTableData.newTableName" ng-check-update-table="tableName">
+                                </div>
+                            </div>
+
+                            <div class="form-group row align-items-center px-3">
+                                <table class="table table-striped table-bordered table-sm table-hover">
+                                    <thead class="thead-default">
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="column in editTableData.modifyColumnList">
+                                            <td ng-if="column !== 'id'">
+                                                 <button type="button" class="btn btn-outline-danger btn-sm" ng-click="removeExistingColumn($index)">X</button>
+                                            </td>
+                                            <td ng-if="column !== 'id'">
+                                                <div>
+                                                    <input type="text" class="form-control form-control-sm" id="column-name" ng-model="column.to" ng-check-update-table="columnName">
+                                                </div>
+                                            </td>
+                                            <td ng-if="column !== 'id'">
+                                                <input type="text" ng-model="columnInfoList[column.from].type" disabled />
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="column in editTableData.addColumnList">
+                                            <td>
+                                                 <button type="button" class="btn btn-outline-danger btn-sm" ng-click="removeNewColumn($index)">X</button>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <input type="text" class="form-control form-control-sm" id="column-name" ng-model="column.name" ng-check-update-table="columnName">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select class="form-control form-control-sm" id="type" ng-model="column.type">
+                                                    <option>integer</option>
+                                                    <option>string</option>
+                                                    <option>increments</option>
+                                                    <option>text</option>
+                                                    <option>bigInteger</option>
+                                                    <option>float</option>
+                                                    <option>boolean</option>
+                                                    <option>date</option>
+                                                    <option>dateTime</option>
+                                                    <option>time</option>
+                                                    <option>timestamp</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="form-group d-flex justify-content-end">
+                                <button type="button" class="btn btn-outline-warning btn-sm" ng-click="addNewColumn()">Add Column</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="updateTableButton" type="button" class="btn btn-primary" ng-click="updateTable()">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Add Data Modal Content -->
         <div class="modal fade" id="addDataModal" tabindex="-1" role="dialog" aria-labelledby="addDataModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -281,7 +364,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure want to delete the id <b>{{deleteDataId}}</b> data?</p>
+                    <p>Are you sure want to delete the id <b>{{selectedDataId}}</b> data?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

@@ -24,6 +24,12 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     $scope.totalPageArray = []
     $scope.displayRows = 30
     $scope.newTable = JSON.parse(DEFAULT_TABLE)
+    $scope.editTableData = {
+        newTableName: '',
+        addColumnList: [],
+        deleteColumnList: [],
+        modifyColumnList: []
+    }
     $scope.newData = {}
     $scope.selectedDataId = 0
     $scope.selectedData = {}
@@ -160,10 +166,69 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     }
 
     /**
-     * Click edit table
+     * Click update table
      */
-    $scope.editTable = () => {
-        if (DEBUG) console.log('Click the edit table.')
+    $scope.updateTable = () => {
+        if (DEBUG) console.log('Click the update table.')
+        
+        // Prepare the data (removed non-modified column)
+        for (var i = 0 ; i < $scope.editTableData.modifyColumnList.length ; i++) {
+            if ($scope.editTableData.modifyColumnList[i].from == $scope.editTableData.modifyColumnList[i].to) {
+                $scope.editTableData.modifyColumnList.splice(i, 1)
+
+                // Because we already removed one row
+                i--
+            }
+        }
+
+        // Send create table request to server
+        $http({
+            method: 'PUT',
+            url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable,
+            data: $scope.editTableData
+        })
+        .then(response => {
+            if (DEBUG) console.log(response)
+            if (response.status === 200) {
+                const data = response.data
+                if (data.code === 200) {
+                    // Update table list
+                    DBService.setTableList(data.data)
+                    $scope.tableList = DBService.getTableList()
+
+                    // Update the selected table
+                    $scope.selectedTable = $scope.editTableData.newTableName
+
+                    // getting columns from selected table
+                    $scope.getColumnList()
+
+                    // getting total count from selected table
+                    $scope.getTotalCount()
+
+                    // getting data from selected table
+                    $scope.getDataList()
+
+                    // Close the editTableModal
+                    angular.element('#editTableModal').modal('hide')
+                } else {
+                    // Display error
+                    $scope.errorCode = data.code
+                    $scope.errorMessage = data.result
+                }
+            } else {
+                // Display error
+                $scope.errorCode = response.status
+                $scope.errorMessage = response.statusText
+            }
+        })
+        .catch(err => {
+            // Display error
+            $scope.errorCode = err.status
+            $scope.errorMessage = err.statusText
+
+            // Close the editTableModal
+            angular.element('#editTableModal').modal('hide')
+        })
     }
 
     /**
@@ -222,6 +287,39 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
     }
 
     /**
+     * Click remove the new column
+     */
+    $scope.addNewColumn = () => {
+        $scope.editTableData.addColumnList.push(JSON.parse(DEFAULT_COLUMN))
+
+        // Send update column broadcast to re-validate the data
+        $scope.$broadcast('updateColumn', null)
+    }
+
+    /**
+     * Click remove the existing column
+     */
+    $scope.removeExistingColumn = (index) => {
+        // Get column name
+        var name = $scope.editTableData.modifyColumnList[index].from
+        $scope.editTableData.deleteColumnList.push(name)
+        $scope.editTableData.modifyColumnList.splice(index, 1)
+
+        // Send update column broadcast to re-validate the data
+        $scope.$broadcast('updateColumn', null)
+    }
+
+    /**
+     * Click remove the new column
+     */
+    $scope.removeNewColumn = (index) => {
+        $scope.editTableData.addColumnList.splice(index, 1)
+
+        // Send update column broadcast to re-validate the data
+        $scope.$broadcast('updateColumn', null)
+    }
+
+    /**
      * Click insert data
      */
     $scope.insertData = () => {
@@ -273,7 +371,7 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
      * Set delete data id
      */
     $scope.setDataId = (id) => {
-        if (DEBUG) console.log('Set data id.')
+        if (DEBUG) console.log('Set data id: ' + id)
         $scope.selectedDataId = id
         $scope.selectedData = DBService.getData(id)
     }
@@ -487,6 +585,23 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     DBService.setColumnList(data.data)
                     $scope.columnList = DBService.getColumnList()
                     $scope.columnInfoList = DBService.getColumnInfoList()
+
+                    // Reset the edit table data
+                    $scope.editTableData = {
+                        newTableName: $scope.selectedTable,
+                        addColumnList: [],
+                        deleteColumnList: [],
+                        modifyColumnList: []
+                    }
+                    $scope.columnList.forEach(column => {
+                        // Ignore the name of column is `id`
+                        if (column !== 'id') {
+                            $scope.editTableData.modifyColumnList.push({
+                                from: column,
+                                to: column
+                            })
+                        }
+                    })
                 } else {
                     // Display error
                     $scope.errorCode = data.code
