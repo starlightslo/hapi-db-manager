@@ -148,6 +148,14 @@
                     </div>
                     <div class="modal-body">
                         <form>
+                            <!-- Error Message Block -->
+                            <div class="alert alert-danger" role="alert" ng-show="errorMessage.length > 0">
+                                <button type="button" class="close" ng-click="closeAlert()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{errorCode}}</strong> {{errorMessage}}
+                            </div>
+
                             <div class="form-group row">
                                 <label for="table-name" class="col-3 col-form-label">Table name:</label>
                                 <div class="col-9">
@@ -239,6 +247,14 @@
                     </div>
                     <div class="modal-body">
                         <form>
+                            <!-- Error Message Block -->
+                            <div class="alert alert-danger" role="alert" ng-show="errorMessage.length > 0">
+                                <button type="button" class="close" ng-click="closeAlert()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{errorCode}}</strong> {{errorMessage}}
+                            </div>
+
                             <div class="form-group row">
                                 <label for="table-name" class="col-3 col-form-label">Table name:</label>
                                 <div class="col-9">
@@ -322,6 +338,14 @@
                     </div>
                     <div class="modal-body">
                         <form>
+                            <!-- Error Message Block -->
+                            <div class="alert alert-danger" role="alert" ng-show="errorMessage.length > 0">
+                                <button type="button" class="close" ng-click="closeAlert()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{errorCode}}</strong> {{errorMessage}}
+                            </div>
+
                             <div class="form-group row align-items-center px-3">
                                 <table class="table table-striped table-bordered table-sm table-hover">
                                     <thead class="thead-default">
@@ -386,6 +410,14 @@
                     </div>
                     <div class="modal-body">
                         <form>
+                            <!-- Error Message Block -->
+                            <div class="alert alert-danger" role="alert" ng-show="errorMessage.length > 0">
+                                <button type="button" class="close" ng-click="closeAlert()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{errorCode}}</strong> {{errorMessage}}
+                            </div>
+
                             <div class="form-group row align-items-center px-3">
                                 <table class="table table-striped table-bordered table-sm table-hover">
                                     <thead class="thead-default">

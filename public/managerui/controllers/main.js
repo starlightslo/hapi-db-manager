@@ -172,9 +172,10 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
         if (DEBUG) console.log('Click the update table.')
         
         // Prepare the data (removed non-modified column)
-        for (var i = 0 ; i < $scope.editTableData.modifyColumnList.length ; i++) {
-            if ($scope.editTableData.modifyColumnList[i].from == $scope.editTableData.modifyColumnList[i].to) {
-                $scope.editTableData.modifyColumnList.splice(i, 1)
+        var editTableData = JSON.parse(JSON.stringify($scope.editTableData))
+        for (var i = 0 ; i < editTableData.modifyColumnList.length ; i++) {
+            if (editTableData.modifyColumnList[i].from == editTableData.modifyColumnList[i].to) {
+                editTableData.modifyColumnList.splice(i, 1)
 
                 // Because we already removed one row
                 i--
@@ -185,7 +186,7 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
         $http({
             method: 'PUT',
             url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable,
-            data: $scope.editTableData
+            data: editTableData
         })
         .then(response => {
             if (DEBUG) console.log(response)
@@ -197,7 +198,7 @@ dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService)
                     $scope.tableList = DBService.getTableList()
 
                     // Update the selected table
-                    $scope.selectedTable = $scope.editTableData.newTableName
+                    $scope.selectedTable = editTableData.newTableName
 
                     // getting columns from selected table
                     $scope.getColumnList()
