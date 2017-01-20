@@ -1,8 +1,8 @@
 'use strict';
 
-const dbManagerApp = angular.module('dbManagerApp');
+const dbManagerAppController = angular.module('dbManagerApp');
 
-dbManagerApp.controller('MainController', ($rootScope, $scope, $http, DBService) => {
+dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, DBService) => {
 
     const DEBUG = true;
 

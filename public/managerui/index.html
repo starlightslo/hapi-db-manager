@@ -46,8 +46,8 @@
                             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{selectedDB}}
                             </button>
-                            <div class="dropdown-menu" ng-repeat="db in dbList">
-                                <a class="dropdown-item" href="#" ng-click="changeDB(db)">{{db}}</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" ng-click="changeDB(db)" ng-repeat="db in dbList">{{db}}</a>
                             </div>
                         </div>
                     </div>

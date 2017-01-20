@@ -1,8 +1,8 @@
 'use strict';
 
-const dbManagerApp = angular.module('dbManagerApp');
+const dbManagerAppService = angular.module('dbManagerApp');
 
-dbManagerApp.factory('DBService', ($rootScope, $http) => {
+dbManagerAppService.factory('DBService', ($rootScope, $http) => {
 
     let dbList = [];
     let tableList = [];
