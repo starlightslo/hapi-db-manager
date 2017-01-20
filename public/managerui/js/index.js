@@ -1,103 +1,134 @@
-var dbManagerApp = angular.module('dbManagerApp', [])
+'use strict';
+
+const dbManagerApp = angular.module('dbManagerApp', []);
 
 // Directives
 dbManagerApp.directive('ngCheckCreateTable', [
-    function () {
+    () => {
+
         return {
-            link: function (scope, element, attrs, ctrl) {
-                var createTableButtonComponent = '#createTableButton'
-                
-                var checking = () => {
+            link: (scope, element, attrs, ctrl) => {
+
+                const createTableButtonComponent = '#createTableButton';
+                const checking = () => {
+
                     // Define
-                    var isPass = true
-                    var regularExpression = /^[a-zA-Z0-9_-]{1,64}$/
+                    let isPass = true;
+                    const regularExpression = /^[a-zA-Z0-9_-]{1,64}$/;
 
                     // Checking the table's name
                     if (!regularExpression.test(scope.newTable.name)) {
-                        isPass = false
+                        isPass = false;
                     }
 
                     // Checking the column's name
-                    scope.newTable.columnList.forEach(column => {
+                    scope.newTable.columnList.forEach((column) => {
+
                         if (!regularExpression.test(column.name)) {
-                            isPass = false
+                            isPass = false;
                         }
-                    })
+
+                    });
 
                     // Active the create table button if validate successed
                     if (isPass) {
-                        $(createTableButtonComponent).removeAttr("disabled")
-                    } else {
-                        $(createTableButtonComponent).attr("disabled", "disabled")
+                        $(createTableButtonComponent).removeAttr('disabled');
                     }
-                }
+                    else {
+                        $(createTableButtonComponent).attr('disabled', 'disabled');
+                    }
+
+                };
 
                 // Checking when the column is updated
                 scope.$on('updateColumn', (event, data) => {
-                    checking()
-                })
+
+                    checking();
+
+                });
 
                 // Checking when the value is updated
                 element.on('keyup', () => {
+
                     scope.$apply(() => {
-                        checking()
-                    })
-                })
+
+                        checking();
+
+                    });
+
+                });
             }
-        }
+        };
+
     }
-])
+]);
 
 dbManagerApp.directive('ngCheckUpdateTable', [
-    function () {
+    () => {
+
         return {
-            link: function (scope, element, attrs, ctrl) {
-                var updateTableButtonComponent = '#updateTableButton'
-                
-                var checking = () => {
+            link: (scope, element, attrs, ctrl) => {
+
+                const updateTableButtonComponent = '#updateTableButton';
+                const checking = () => {
+
                     // Define
-                    var isPass = true
-                    var regularExpression = /^[a-zA-Z0-9_-]{1,64}$/
+                    let isPass = true;
+                    const regularExpression = /^[a-zA-Z0-9_-]{1,64}$/;
 
                     // Checking the new table's name
                     if (!regularExpression.test(scope.editTableData.newTableName)) {
-                        isPass = false
+                        isPass = false;
                     }
 
                     // Checking the new column's name
-                    scope.editTableData.addColumnList.forEach(column => {
+                    scope.editTableData.addColumnList.forEach((column) => {
+
                         if (!regularExpression.test(column.name)) {
-                            isPass = false
+                            isPass = false;
                         }
-                    })
+
+                    });
 
                     // Checking the modify column's name
-                    scope.editTableData.modifyColumnList.forEach(column => {
+                    scope.editTableData.modifyColumnList.forEach((column) => {
+
                         if (!regularExpression.test(column.to)) {
-                            isPass = false
+                            isPass = false;
                         }
-                    })
+
+                    });
 
                     // Active the create table button if validate successed
                     if (isPass) {
-                        $(updateTableButtonComponent).removeAttr("disabled")
-                    } else {
-                        $(updateTableButtonComponent).attr("disabled", "disabled")
+                        $(updateTableButtonComponent).removeAttr('disabled');
                     }
-                }
+                    else {
+                        $(updateTableButtonComponent).attr('disabled', 'disabled');
+                    }
+
+                };
 
                 // Checking when the column is updated
                 scope.$on('updateColumn', (event, data) => {
-                    checking()
-                })
+
+                    checking();
+
+                });
 
                 // Checking when the value is updated
                 element.on('keyup', () => {
+
                     scope.$apply(() => {
-                        checking()
-                    })
-                })
+
+                        checking();
+
+                    });
+
+                });
+
             }
-        }
+        };
+
     }
-])
+]);

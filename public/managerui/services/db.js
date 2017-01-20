@@ -1,53 +1,84 @@
-var dbManagerApp = angular.module('dbManagerApp')
+'use strict';
+
+const dbManagerApp = angular.module('dbManagerApp');
 
 dbManagerApp.factory('DBService', ($rootScope, $http) => {
-    var dbList = []
-    var tableList = []
-    var columnList = []
-    var columnInfoList = []
-    var dataList = []
-    var totalCount = 0
+
+    let dbList = [];
+    let tableList = [];
+    let columnList = [];
+    let columnInfoList = [];
+    let dataList = [];
+    let totalCount = 0;
     return {
         setDBList: (data) => {
-            dbList = data
+
+            dbList = data;
+
         },
         getDBList: () => {
-            return dbList
+
+            return dbList;
+
         },
         setTableList: (data) => {
-            tableList = data
+
+            tableList = data;
+
         },
         getTableList: () => {
-            return tableList
+
+            return tableList;
+
         },
         setColumnList: (data) => {
-            columnInfoList = data
-            columnList = Object.keys(data)
+
+            columnInfoList = data;
+            columnList = Object.keys(data);
+
         },
         getColumnList: () => {
-            return columnList
+
+            return columnList;
+
         },
         getColumnInfoList: () => {
-            return columnInfoList
+
+            return columnInfoList;
+
         },
         setDataList: (data) => {
-            dataList = data
+
+            dataList = data;
+
         },
         getDataList: () => {
-            return dataList
+
+            return dataList;
+
         },
         getData: (id) => {
-            for (var i = 0 ; i < dataList.length ; i++) {
-                if (dataList[i].id === id) {
-                    return JSON.parse(JSON.stringify(dataList[i]))
+
+            let result = {};
+            dataList.forEach((data) => {
+
+                if (data.id === id) {
+                    result = JSON.parse(JSON.stringify(data));
                 }
-            }
+
+            });
+            return result;
+
         },
         setTotalCount: (count) => {
-            totalCount = count
+
+            totalCount = count;
+
         },
         getTotalCount: () => {
-            return totalCount
+
+            return totalCount;
+
         }
-    }
-})
+    };
+});
