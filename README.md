@@ -2,8 +2,8 @@
 This is a database manager plug-in for [HAPI](http://hapijs.com/), it can easy to manage your database with a fantastic web interface.
 
 [![build status](https://img.shields.io/travis/starlightslo/hapi-db-manager.svg?style=flat-square)](http://travis-ci.org/starlightslo/hapi-db-manager)
+[![Coverage Status](https://coveralls.io/repos/github/starlightslo/hapi-db-manager/badge.svg?branch=master)](https://coveralls.io/github/starlightslo/hapi-db-manager)
 [![npm downloads](https://img.shields.io/npm/dm/hapi-db-manager.svg?style=flat-square)](https://www.npmjs.com/package/hapi-db-manager)
-[![MIT license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.github.com/glennjones/microformat-shic/master/license.txt)
 
 # Install
 

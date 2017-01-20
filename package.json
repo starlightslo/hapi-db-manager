@@ -1,6 +1,6 @@
 {
   "name": "hapi-db-manager",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A database manager plugin for hapi",
   "main": "index.js",
   "keywords": [
@@ -14,7 +14,8 @@
     "test-cov-html": "npm run test-migrate && ./node_modules/.bin/lab -r html -o coverage.html",
     "test-migrate": "npm run test-migrate-dev && npm run test-migrate-staging",
     "test-migrate-dev": "./node_modules/.bin/knex migrate:latest --env development",
-    "test-migrate-staging": "./node_modules/.bin/knex migrate:latest --env staging"
+    "test-migrate-staging": "./node_modules/.bin/knex migrate:latest --env staging",
+    "test-cov-coveralls": "./node_modules/.bin/lab -r lcov | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "code": "^4.0.0",
+    "coveralls": "^2.11.15",
     "hapi": "^16.1.0",
     "inert": "^4.1.0",
     "knex": "^0.12.6",
