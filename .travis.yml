@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "6"
+  - "4"
+  - "5"
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database hapi_db_manager_testing;' -U postgres
