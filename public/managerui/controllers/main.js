@@ -415,6 +415,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                     DBService.setDataList(data.data);
                     $scope.dataList = DBService.getDataList();
 
+                    // getting total count from selected table
+                    $scope.getTotalCount();
+
                     // Reset the new data value
                     $scope.newData = {};
 
@@ -487,6 +490,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                 if (data.code === 200) {
                     DBService.setDataList(data.data);
                     $scope.dataList = DBService.getDataList();
+
+                    // getting total count from selected table
+                    $scope.getTotalCount();
 
                     // Reset the new data value
                     $scope.selectedData = {};
@@ -827,7 +833,14 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                     $scope.totalCount = DBService.getTotalCount();
 
                     // Set up total page
-                    $scope.totalPage = Math.ceil($scope.totalCount / $scope.displayRows);
+                    if ($scope.totalCount > 0) {
+                        $scope.totalPage = Math.ceil($scope.totalCount / $scope.displayRows);
+                    }
+                    else {
+                        $scope.totalPage = 1;
+                    }
+
+                    // Set up the page array for display
                     $scope.totalPageArray = [];
                     for (let i = 1; i <= $scope.totalPage; ++i) {
                         $scope.totalPageArray.push(i);
