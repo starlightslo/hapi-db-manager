@@ -17,6 +17,7 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
     });
 
     // Variables
+    $scope.isLoading = true;
     $scope.selectedDB = '';
     $scope.selectedTable = '';
     $scope.dbList = [];
@@ -63,6 +64,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
             }
             $scope.page = page;
 
+            // Set loading screen
+            $scope.isLoading = true;
+
             // getting tables from selected database
             $scope.getDataList();
         }
@@ -97,6 +101,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
             }
             $scope.selectedTable = table;
 
+            // Set loading screen
+            $scope.isLoading = true;
+
             // getting columns from selected table
             $scope.getColumnList();
 
@@ -122,6 +129,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
         const payload = {
             columnList: $scope.newTable.columnList
         };
+
+        // Set loading screen
+        $scope.isLoading = true;
 
         // Send create table request to server
         $http({
@@ -159,6 +169,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                 $scope.errorMessage = response.statusText;
             }
 
+            // Close loading screen
+            $scope.isLoading = false;
+
         })
         .catch((err) => {
 
@@ -168,6 +181,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
 
             // Close the newTableModal
             angular.element('#newTableModal').modal('hide');
+
+            // Close loading screen
+            $scope.isLoading = false;
 
         });
     };
@@ -222,6 +238,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
             }
         }
 
+        // Set loading screen
+        $scope.isLoading = true;
+
         // Send create table request to server
         $http({
             method: 'PUT',
@@ -267,6 +286,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                 $scope.errorMessage = response.statusText;
             }
 
+            // Close loading screen
+            $scope.isLoading = false;
+
         })
         .catch((err) => {
 
@@ -276,6 +298,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
 
             // Close the editTableModal
             angular.element('#editTableModal').modal('hide');
+
+            // Close loading screen
+            $scope.isLoading = false;
 
         });
 
@@ -289,6 +314,10 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
         if (DEBUG) {
             console.log('Click the drop table.');
         }
+
+        // Set loading screen
+        $scope.isLoading = true;
+
         $http({
             method: 'DELETE',
             url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable
@@ -344,6 +373,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
             // Close the dropTableModal
             angular.element('#dropTableModal').modal('hide');
 
+            // Close loading screen
+            $scope.isLoading = false;
+
         });
 
     };
@@ -395,6 +427,10 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
         if (DEBUG) {
             console.log('Click the insert data.');
         }
+
+        // Set loading screen
+        $scope.isLoading = true;
+
         $http({
             method: 'POST',
             url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data',
@@ -436,6 +472,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                 $scope.errorMessage = response.statusText;
             }
 
+            // Close loading screen
+            $scope.isLoading = false;
+
         })
         .catch((err) => {
 
@@ -445,6 +484,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
 
             // Close the addTableModal
             angular.element('#addDataModal').modal('hide');
+
+            // Close loading screen
+            $scope.isLoading = false;
 
         });
 
@@ -471,6 +513,10 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
         if (DEBUG) {
             console.log('Click the delete data.');
         }
+
+        // Set loading screen
+        $scope.isLoading = true;
+
         $http({
             method: 'DELETE',
             url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data',
@@ -512,6 +558,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                 $scope.errorMessage = response.statusText;
             }
 
+            // Close loading screen
+            $scope.isLoading = false;
+
         })
         .catch((err) => {
 
@@ -521,6 +570,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
 
             // Close the deleteDataModal
             angular.element('#deleteDataModal').modal('hide');
+
+            // Close loading screen
+            $scope.isLoading = false;
 
         });
 
@@ -534,6 +586,10 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
         if (DEBUG) {
             console.log('Click the update data.');
         }
+
+        // Set loading screen
+        $scope.isLoading = true;
+
         $http({
             method: 'PUT',
             url: $scope.basePath + '/api/' + $scope.selectedDB + '/' + $scope.selectedTable + '/data/' + $scope.selectedDataId,
@@ -572,6 +628,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                 $scope.errorMessage = response.statusText;
             }
 
+            // Close loading screen
+            $scope.isLoading = false;
+
         })
         .catch((err) => {
 
@@ -581,6 +640,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
 
             // Close the editDataModal
             angular.element('#editDataModal').modal('hide');
+
+            // Close loading screen
+            $scope.isLoading = false;
 
         });
 
@@ -601,6 +663,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
      * Request all database
      */
     $scope.getDatabaseList = () => {
+
+        // Set loading screen
+        $scope.isLoading = true;
 
         $http({
             method: 'GET',
@@ -652,6 +717,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
      * Request all tables
      */
     $scope.getTableList = () => {
+
+        // Set loading screen
+        $scope.isLoading = true;
 
         $http({
             method: 'GET',
@@ -801,12 +869,18 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                 $scope.errorMessage = response.statusText;
             }
 
+            // Close loading screen
+            $scope.isLoading = false;
+
         })
         .catch((err) => {
 
             // Display error
             $scope.errorCode = err.status;
             $scope.errorMessage = err.statusText;
+
+            // Close loading screen
+            $scope.isLoading = false;
 
         });
 
