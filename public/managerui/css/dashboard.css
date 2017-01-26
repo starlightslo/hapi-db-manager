@@ -80,3 +80,9 @@ h1 {
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
 }
+
+/* Function Block */
+.function-block {
+  min-width: 120px;
+  max-width: 120px;
+}

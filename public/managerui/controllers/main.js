@@ -69,6 +69,10 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
 
             // getting tables from selected database
             $scope.getDataList();
+
+            // Update Pagination
+            $scope.updatePagination();
+
         }
 
     };
@@ -914,11 +918,9 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
                         $scope.totalPage = 1;
                     }
 
-                    // Set up the page array for display
-                    $scope.totalPageArray = [];
-                    for (let i = 1; i <= $scope.totalPage; ++i) {
-                        $scope.totalPageArray.push(i);
-                    }
+                    // Update Pagination
+                    $scope.updatePagination();
+
                 }
                 else {
                     // Display error
@@ -940,6 +942,24 @@ dbManagerAppController.controller('MainController', ($rootScope, $scope, $http, 
             $scope.errorMessage = err.statusText;
 
         });
+
+    };
+
+    /**
+     * Update Pagination
+     */
+    $scope.updatePagination = () => {
+
+        // Set up the page array for display
+        let totalDisplayPage = 8;
+        $scope.totalPageArray = [];
+        let startPage = $scope.page - 4;
+        if (startPage < 1) {
+            startPage = 1;
+        }
+        for (let i = startPage; totalDisplayPage >= 0 && i <= $scope.totalPage; ++i, --totalDisplayPage) {
+            $scope.totalPageArray.push(i);
+        }
 
     };
 

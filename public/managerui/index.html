@@ -97,7 +97,7 @@
                             <thead class="thead-default">
                                 <tr>
                                     <th ng-repeat="column in columnList">{{column}}</th>
-                                    <th>Action</th>
+                                    <th class="function-block">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -107,7 +107,7 @@
                                             {{data[column]}}
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="function-block">
                                         <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editDataModal" ng-click="setDataId(data['id'])">Edit</button>
                                         <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteDataModal" ng-click="setDataId(data['id'])">Delete</button>
                                     </td>
@@ -120,9 +120,15 @@
                     <div class="d-flex justify-content-center">
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
+                                <li class="page-item" ng:class="{true: 'disabled', false:''}[(page-5)<1]">
+                                    <a class="page-link" href="#" aria-label="Previous" ng-click="changePage(page-5)">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous 5</span>
+                                    </a>
+                                </li>
                                 <li class="page-item" ng:class="{true: 'disabled', false:''}[page==1]">
                                     <a class="page-link" href="#" aria-label="Previous" ng-click="changePage(page-1)">
-                                        <span aria-hidden="true">&laquo;</span>
+                                        <span aria-hidden="true">&lsaquo;</span>
                                         <span class="sr-only">Previous</span>
                                     </a>
                                 </li>
@@ -131,8 +137,14 @@
                                 </li>
                                 <li class="page-item" ng:class="{true: 'disabled', false:''}[page==totalPage]">
                                     <a class="page-link" href="#" aria-label="Next" ng-click="changePage(page+1)">
-                                        <span aria-hidden="true">&raquo;</span>
+                                        <span aria-hidden="true">&rsaquo;</span>
                                         <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                                <li class="page-item" ng:class="{true: 'disabled', false:''}[(page+5)>totalPage]">
+                                    <a class="page-link" href="#" aria-label="Next" ng-click="changePage(page+5)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next 5</span>
                                     </a>
                                 </li>
                             </ul>
