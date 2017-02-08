@@ -1,6 +1,6 @@
 {
   "name": "hapi-db-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A database manager plugin for hapi",
   "main": "index.js",
   "keywords": [

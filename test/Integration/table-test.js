@@ -390,6 +390,31 @@ describe('Table', () => {
 
     });
 
+    it('sqlite the new table name of rename is already existing test', (done) => {
+
+        const payload = {
+            newTableName: 'test3',
+            addColumnList: [],
+            deleteColumnList: [],
+            modifyColumnList: []
+        };
+        Helper.createServer({
+            databaseConfigList: [SQLiteDBConfig]
+        }, (err, server) => {
+
+            expect(err).to.equal(null);
+            server.inject({ method: 'PUT', url: '/dbadmin/api/' + SQLiteDBConfig.name + '/test4', payload }, (response) => {
+
+                expect(response.statusCode).to.equal(200);
+                expect(response.result.code).to.equal(400);
+                done();
+
+            });
+
+        });
+
+    });
+
     it('sqlite rename table test', (done) => {
 
         const payload = {
